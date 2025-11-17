@@ -1,4 +1,4 @@
-name: Python tests
+name: lab3.yml
 
 on:
   push:
@@ -25,7 +25,6 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Cache pip
-      # кешування залежностей для швидшого запуску
         uses: actions/cache@v3
         with:
           path: ~/.cache/pip
@@ -36,8 +35,11 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Run tests
-        run: pytest -q | tee test.log
+      - name: Run tests and save log
+        run: |
+          pytest -q > test.log
+
+          type test.log || cat test.log
 
       - name: Upload test log artifact
         if: always()
