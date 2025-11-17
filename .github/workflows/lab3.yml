@@ -25,6 +25,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Cache pip
+      # кешування залежностей для швидшого запуску
         uses: actions/cache@v3
         with:
           path: ~/.cache/pip
@@ -35,9 +36,8 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      # 🟢 тут головна зміна: без `tee`, замість цього простий редірект
       - name: Run tests
-        run: pytest -q > test.log
+        run: pytest -q | tee test.log
 
       - name: Upload test log artifact
         if: always()
