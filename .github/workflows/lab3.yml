@@ -1,4 +1,4 @@
-name: lab3.yml
+name: Lab3 string algorithms tests
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: ["main"]
 
 jobs:
-  test:
+  tests:
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -25,6 +25,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Cache pip
+      # кешування залежностей для пришвидшення
         uses: actions/cache@v3
         with:
           path: ~/.cache/pip
@@ -35,15 +36,12 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Run tests and save log
-        run: |
-          pytest -q > test.log
-
-          type test.log || cat test.log
+      - name: Run tests
+        run: pytest -q | tee pytest.log
 
       - name: Upload test log artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: test-log-${{ matrix.os }}-py${{ matrix.python-version }}
-          path: test.log
+          name: pytest-log-${{ matrix.os }}-py${{ matrix.python-version }}
+          path: pytest.log
